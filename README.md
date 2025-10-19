@@ -7,10 +7,10 @@ For Aashni and Om
 3. Run:
 4.  - `python generate_charmm_inputs.py --pdb my_cleaned.pdb --outdir cphmd_run --charmm_bin /full/path/to/charmm --ph 4.5`
     - `cd cphmd_run`
-    -  - `./run_charmm.sh`
+    -  `./run_charmm.sh`
 5. Outputs of interest:
    - `phmd_lambda_history.dat` (time series of lambda values)
-   -  - `phmd_summary.txt`
+   -  `phmd_summary.txt`
    - `prod.log`
 7. If CHARMM errors at any `phmd` command, copy the error message and share it, inputs are easily adjusted to your CHARMM build's exact syntax.
 
