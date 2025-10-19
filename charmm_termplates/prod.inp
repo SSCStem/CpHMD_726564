@@ -1,0 +1,51 @@
+* prod.inp - production CpHMD single pH = 4.5
+* Uses CHARMM PHMD module commands (phmd ...)
+*
+
+read rtf card name top_all36_prot.rtf
+read para card name par_all36_prot.prm
+
+read psf card name init.psf
+read coor pdb name equil_coords.pdb
+
+! Nonbonded / PME setup (adjust grid sizes to match box)
+
+nbond atom vatom vdistance 14.0 atom cutnb 14.0 ctonnb 12.0 ctofnb 10.0 -
+      eps 1.0 e14fac 1.0
+para nbond
+! In CHARMM, typical PME setup commands exist; grid size can be auto-determined in some builds.
+
+! PHMD / CpHMD configuration (single pH run)
+! Set global pH value
+
+phmd setup ph 4.5
+
+! Read titration list file produced by the generator
+! Format: RESNAME  RESNUM  CHAIN  (one per line)
+
+phmd titrate read card name titration_list.txt
+
+! Optional: set lambda-dynamics and metropolis parameters (defaults may be chill)
+
+phmd lambda scale 1.0
+phmd metropolis interval 1000    ! attempt MC every 1000 steps (example)
+phmd metropolis prob 1.0
+
+! Turn on PHMD so titration moves are active during dynamics
+phmd on
+
+! Start production dynamics — here 4 ns (2,000,000 steps @ 0.002 ps, ig u could change?)
+dynamics langevin verlet nstep 2000000 timestep 0.002 -
+    firstt 300.0 finalt 300.0 tbath 300.0 -
+    nprint 5000 iun 0 iunw 0
+
+! Turn off PHMD and write final outputs
+phmd off
+
+! Write coordinates and PHMD outputs
+write coor pdb name prod_coords.pdb
+write coor card name prod_coords.crd
+
+! Save PHMD information (lambda traces/titration logs)
+phmd write titration history name phmd_lambda_history.dat
+phmd write summary name phmd_summary.txt
