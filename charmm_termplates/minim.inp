@@ -1,0 +1,29 @@
+* minim.inp - minimization and PSF/coordinate generation*
+
+! --- topology and parameter files (update paths if needed) ---
+! You should have CHARMM force field files in the working dir or give full paths
+
+read rtf card name top_all36_prot.rtf
+read para card name par_all36_prot.prm
+
+! read PDB and build PSF
+
+read sequence pdb card name {{ pdbfile }}
+generate ** setup  ! build topology for all chains
+coord pdb read card name {{ pdbfile }}
+set nres 0
+
+! If you already have PSF/coor from external tool, replace generate/coord with appropriate read commands.
+
+! Write initial PSF/CRD for subsequent steps
+
+write psf card name init.psf
+write coor pdb name init_coords.pdb
+
+! Minimization: steepest descent then conjugate gradient (ABNR)
+
+mini sd nstep 2000 nprint 100
+mini abnr nstep 2000 nprint 100
+
+write coor pdb name minim_coords.pdb
+write coor card name minim_coords.crd
