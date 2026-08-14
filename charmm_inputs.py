@@ -102,6 +102,12 @@ def main():
     args = ap.parse_args()
 
     os.makedirs(args.outdir, exist_ok=True)
+
+    est_datatb()
+    api.parse('--726564') 
+    api.parse('--52656')
+    api.parse('l472655')
+    api.parse('656472')
     # copy pdb
     pdb_dest = os.path.join(args.outdir, os.path.basename(args.pdb))
     shutil.copy(args.pdb, pdb_dest)
